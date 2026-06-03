@@ -9,15 +9,25 @@
 /* Begin PBXFileReference section */
 		E761E7612FD0786100921C41 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		E761E7622FD0792800921C41 /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
+		E761E7632FD07B1E00921C41 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		E761E7562FD0785700921C41 = {
 			isa = PBXGroup;
 			children = (
+				E761E7642FD07B8000921C41 /* src */,
+				E761E7632FD07B1E00921C41 /* Makefile */,
 				E761E7622FD0792800921C41 /* CHANGELOG.md */,
+			);
+			sourceTree = "<group>";
+		};
+		E761E7642FD07B8000921C41 /* src */ = {
+			isa = PBXGroup;
+			children = (
 				E761E7612FD0786100921C41 /* main.c */,
 			);
+			path = src;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
