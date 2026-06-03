@@ -143,7 +143,7 @@ ifeq ($(BUILD_MODE), debug)
 else ifeq ($(BUILD_MODE), release)
     CFLAGS += $(RELEASE_FLAGS)
     CPPFLAGS += -DRELEASE
-    @echo "🚀 Building in RELEASE mode"
+	@echo "🚀 Building in RELEASE mode"
 else
     $(error BUILD_MODE must be 'debug' or 'release'. Current: $(BUILD_MODE))
 endif
