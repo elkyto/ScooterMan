@@ -18,6 +18,6 @@ All notable changes to the ScooterMan project will be documented in this file.
 ## @metadata
 **Maintainer:** Allexander Bergmans  
 **Repository:** github.com/elkyto/scooterman  
-**Contact:** alexander@elkyto.com  
+**Contact:** allexander@elkyto.com  
 **Changelog policy:** Updated with every release  
 **Verification:** @signed-off-by: Allexander Bergmans <allexander@elkyto.com>
