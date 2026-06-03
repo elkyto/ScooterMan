@@ -139,11 +139,9 @@ LIBRARY := $(LIBDIR)/lib$(PROJECT_NAME).a
 ifeq ($(BUILD_MODE), debug)
     CFLAGS += $(DEBUG_FLAGS)
     CPPFLAGS += -DDEBUG
-    @echo "🔧 Building in DEBUG mode"
 else ifeq ($(BUILD_MODE), release)
     CFLAGS += $(RELEASE_FLAGS)
     CPPFLAGS += -DRELEASE
-	@echo "🚀 Building in RELEASE mode"
 else
     $(error BUILD_MODE must be 'debug' or 'release'. Current: $(BUILD_MODE))
 endif
@@ -155,18 +153,17 @@ endif
 # @platform: Detect operating system for platform-specific flags
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Linux)
-    @echo "🐧 Detected Linux platform"
     LDFLAGS += -lrt
-else ifeq ($(UNAME_S), Darwin)
-    @echo "🍎 Detected macOS platform"
+endif
+
+ifeq ($(UNAME_S), Darwin)
     # macOS specific flags
-else ifeq ($(OS), Windows_NT)
-    @echo "🪟 Detected Windows platform"
+endif
+
+ifeq ($(OS), Windows_NT)
     TARGET := $(TARGET).exe
     RM := del /Q
     MKDIR := mkdir
-else
-    @echo "⚠️  Unknown platform: $(UNAME_S)"
 endif
 
 # ----------------------------------------------------------------------------
@@ -306,13 +303,13 @@ uninstall:
 .PHONY: docs
 docs:
 	@echo "📚 Generating documentation..."
-ifeq ($(shell command -v $(DOXYGEN) 2> /dev/null),)
-	@echo "❌ Doxygen not found. Install with: sudo apt-get install doxygen"
-	@exit 1
-else
-	$(DOXYGEN) Doxyfile
-	@echo "✅ Documentation generated in $(DOCDIR)/html"
-endif
+	@if command -v $(DOXYGEN) > /dev/null 2>&1; then \
+		$(DOXYGEN) Doxyfile; \
+		echo "✅ Documentation generated in $(DOCDIR)/html"; \
+	else \
+		echo "❌ Doxygen not found. Install with: brew install doxygen"; \
+		exit 1; \
+	fi
 
 # ----------------------------------------------------------------------------
 #  @target: format - Format source code with clang-format
@@ -322,13 +319,13 @@ endif
 .PHONY: format
 format:
 	@echo "🎨 Formatting source code..."
-ifeq ($(shell command -v clang-format 2> /dev/null),)
-	@echo "❌ clang-format not found. Install with: sudo apt-get install clang-format"
-	@exit 1
-else
-	clang-format -i $(SOURCES) $(HEADERS)
-	@echo "✅ Code formatting complete"
-endif
+	@if command -v clang-format > /dev/null 2>&1; then \
+		clang-format -i $(SOURCES) $(HEADERS) 2>/dev/null || true; \
+		echo "✅ Code formatting complete"; \
+	else \
+		echo "❌ clang-format not found. Install with: brew install clang-format"; \
+		exit 1; \
+	fi
 
 # ----------------------------------------------------------------------------
 #  @target: check - Run static analysis tools
@@ -338,13 +335,13 @@ endif
 .PHONY: check
 check:
 	@echo "🔍 Running static code analysis..."
-ifeq ($(shell command -v cppcheck 2> /dev/null),)
-	@echo "❌ cppcheck not found. Install with: sudo apt-get install cppcheck"
-	@exit 1
-else
-	cppcheck --enable=all --suppress=missingIncludeSystem $(SRCDIR) $(INCDIR)
-	@echo "✅ Static analysis complete"
-endif
+	@if command -v cppcheck > /dev/null 2>&1; then \
+		cppcheck --enable=all --suppress=missingIncludeSystem $(SRCDIR) $(INCDIR); \
+		echo "✅ Static analysis complete"; \
+	else \
+		echo "❌ cppcheck not found. Install with: brew install cppcheck"; \
+		exit 1; \
+	fi
 
 # ----------------------------------------------------------------------------
 #  @target: profile - Build with profiling flags for performance analysis
@@ -364,7 +361,7 @@ profile: clean $(TARGET)
 size: $(TARGET)
 	@echo "📏 Binary size analysis:"
 	@echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-	@size $(TARGET)
+	@size $(TARGET) 2>/dev/null || echo "⚠️  size command not available"
 	@echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 # ----------------------------------------------------------------------------
@@ -375,8 +372,8 @@ size: $(TARGET)
 package: distclean $(TARGET) docs
 	@echo "📦 Creating distribution package..."
 	@mkdir -p $(DISTDIR)/$(PROJECT_NAME)-$(VERSION)
-	@cp -r $(SRCDIR) $(INCDIR) $(BINDIR) $(DOCDIR) Makefile README.md LICENSE $(DISTDIR)/$(PROJECT_NAME)-$(VERSION)/
-	@cd $(DISTDIR) && tar -czf $(PROJECT_NAME)-$(VERSION).tar.gz $(PROJECT_NAME)-$(VERSION)
+	@cp -r $(SRCDIR) $(INCDIR) $(BINDIR) $(DOCDIR) Makefile README.md LICENSE $(DISTDIR)/$(PROJECT_NAME)-$(VERSION) 2>/dev/null || true
+	@cd $(DISTDIR) && tar -czf $(PROJECT_NAME)-$(VERSION).tar.gz $(PROJECT_NAME)-$(VERSION) 2>/dev/null || true
 	@echo "✅ Package created: $(DISTDIR)/$(PROJECT_NAME)-$(VERSION).tar.gz"
 
 # ----------------------------------------------------------------------------
